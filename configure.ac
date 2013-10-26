@@ -91,6 +91,14 @@ if test "$nfconntrack" -ne 1; then
 	echo "WARNING: libnetfilter_conntrack not found, connlabel match will not be built";
 fi;
 
+AC_CHECK_DECL([TCPOPT_WINDOW], [tcpopt_ok=1], [tcpopt_ok=0],
+	[[#include <netinet/tcp.h>]])
+
+if test "$tcpopt_ok" -ne 1; then
+	blacklist_modules="$blacklist_modules TCPOPTSTRIP";
+	echo "WARNING: TCPOPT_* constants not found, TCPOPTSTRIP target will not be built";
+fi;
+
 AC_SUBST([blacklist_modules])
 AC_CHECK_SIZEOF([struct ip6_hdr], [], [#include <netinet/ip6.h>])
 
